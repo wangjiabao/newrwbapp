@@ -496,15 +496,15 @@ func (u *UserRepo) UpdateUserRewardAreaTwo(ctx context.Context, userId int64, am
 
 // UpdateUserNewTwoNew .
 func (u *UserRepo) UpdateUserNewTwoNew(ctx context.Context, userId int64, amountUsdt float64, last uint64, amountRawFloat float64, coinType string) error {
-	if "RAW" == coinType {
+	if "USDT" == coinType {
 		res := u.data.DB(ctx).Table("user").Where("id=?", userId).
 			Updates(map[string]interface{}{"amount_usdt": gorm.Expr("amount_usdt + ?", amountUsdt), "last": last, "updated_at": time.Now().Format("2006-01-02 15:04:05")})
 		if res.Error != nil {
 			return errors.New(500, "UPDATE_USER_ERROR", "用户信息修改失败")
 		}
 
-		res = u.data.DB(ctx).Table("user_balance").Where("user_id=?", userId).Where("balance_raw_float>=?", amountRawFloat).
-			Updates(map[string]interface{}{"balance_raw_float": gorm.Expr("balance_raw_float - ?", amountRawFloat)})
+		res = u.data.DB(ctx).Table("user_balance").Where("user_id=?", userId).Where("balance_usdt_float>=?", amountRawFloat).
+			Updates(map[string]interface{}{"balance_usdt_float": gorm.Expr("balance_usdt_float - ?", amountRawFloat)})
 		if res.Error != nil {
 			return errors.New(500, "UPDATE_USER_ERROR", "用户信息修改失败")
 		}
@@ -2002,8 +2002,8 @@ func (ub *UserBalanceRepo) ToAddressAmountRaw(ctx context.Context, userId int64,
 func (ub *UserBalanceRepo) WithdrawUsdt2(ctx context.Context, userId int64, amount float64) error {
 	var err error
 	if res := ub.data.DB(ctx).Table("user_balance").
-		Where("user_id=? and balance_raw_float>=?", userId, amount).
-		Updates(map[string]interface{}{"balance_raw_float": gorm.Expr("balance_raw_float - ?", amount)}); 0 == res.RowsAffected || nil != res.Error {
+		Where("user_id=? and balance_usdt_float>=?", userId, amount).
+		Updates(map[string]interface{}{"balance_usdt_float": gorm.Expr("balance_usdt_float - ?", amount)}); 0 == res.RowsAffected || nil != res.Error {
 		return errors.NotFound("user balance err", "user balance error")
 	}
 
@@ -2017,7 +2017,7 @@ func (ub *UserBalanceRepo) WithdrawUsdt2(ctx context.Context, userId int64, amou
 	userBalanceRecode.Balance = userBalance.BalanceUsdt
 	userBalanceRecode.UserId = userBalance.UserId
 	userBalanceRecode.Type = "withdraw"
-	userBalanceRecode.CoinType = "RAW"
+	userBalanceRecode.CoinType = "USDT"
 	userBalanceRecode.AmountNew = amount
 	err = ub.data.DB(ctx).Table("user_balance_record").Create(&userBalanceRecode).Error
 	if err != nil {

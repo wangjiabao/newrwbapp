@@ -1867,28 +1867,28 @@ func (uuc *UserUseCase) AmountTo(ctx context.Context, req *v1.AmountToRequest, u
 
 func (uuc *UserUseCase) Buy(ctx context.Context, req *v1.BuyRequest, user *User) (*v1.BuyReply, error) {
 	var (
-		amount   = req.SendBody.Amount
-		configs  []*Config
-		bPrice   float64
+		amount = req.SendBody.Amount
+		//configs  []*Config
+		//bPrice   float64
 		coinType string
 		err      error
 	)
 
-	configs, err = uuc.configRepo.GetConfigByKeys(ctx,
-		"b_price",
-	)
-	if nil != configs {
-		for _, vConfig := range configs {
-			if "b_price" == vConfig.KeyName {
-				bPrice, err = strconv.ParseFloat(vConfig.Value, 10)
-				if nil != err {
-					return &v1.BuyReply{
-						Status: "币价错误",
-					}, nil
-				}
-			}
-		}
-	}
+	//configs, err = uuc.configRepo.GetConfigByKeys(ctx,
+	//	"b_price",
+	//)
+	//if nil != configs {
+	//	for _, vConfig := range configs {
+	//		if "b_price" == vConfig.KeyName {
+	//			bPrice, err = strconv.ParseFloat(vConfig.Value, 10)
+	//			if nil != err {
+	//				return &v1.BuyReply{
+	//					Status: "币价错误",
+	//				}, nil
+	//			}
+	//		}
+	//	}
+	//}
 
 	var (
 		tmpValue    int64
@@ -1921,14 +1921,14 @@ func (uuc *UserUseCase) Buy(ctx context.Context, req *v1.BuyRequest, user *User)
 
 		coinType = "KSDT"
 	} else {
-		amountRaw = float64(amount) / bPrice
-		if amountRaw > userBalance.BalanceRawFloat {
+		//amountRaw = float64(amount) / bPrice
+		if amountRaw > userBalance.BalanceUsdtFloat {
 			return &v1.BuyReply{
-				Status: "rwb余额不足",
+				Status: "usdt余额不足",
 			}, nil
 		}
 
-		coinType = "RAW"
+		coinType = "USDT"
 	}
 
 	notExistDepositResult := make([]*EthUserRecord, 0)
@@ -2071,7 +2071,7 @@ func (uuc *UserUseCase) EthUserRecordHandle(ctx context.Context, amount uint64, 
 		}
 
 		if err = uuc.tx.ExecTx(ctx, func(ctx context.Context) error { // 事务
-			if "RAW" == coinType {
+			if "USDT" == coinType {
 				err = uuc.repo.UpdateUserNewTwoNew(ctx, v.UserId, float64(amount), last, amountRaw, coinType)
 				if nil != err {
 					return err
@@ -2445,7 +2445,7 @@ func (uuc *UserUseCase) Withdraw(ctx context.Context, req *v1.WithdrawRequest, u
 	}
 
 	amountFloat := float64(req.SendBody.AmountNew)
-	if userBalance.BalanceRawFloat < amountFloat {
+	if userBalance.BalanceUsdtFloat < amountFloat {
 		return &v1.WithdrawReply{
 			Status: "余额不足",
 		}, nil
@@ -2502,7 +2502,7 @@ func (uuc *UserUseCase) Withdraw(ctx context.Context, req *v1.WithdrawRequest, u
 		if nil != err {
 			return err
 		}
-		_, err = uuc.ubRepo.GreateWithdraw(ctx, user.ID, amountFloatSubFee, amountFloat, "RAW", user.Address)
+		_, err = uuc.ubRepo.GreateWithdraw(ctx, user.ID, amountFloatSubFee, amountFloat, "USDT", user.Address)
 		if nil != err {
 			return err
 		}
