@@ -1054,7 +1054,7 @@ func (uuc *UserUseCase) UserInfo(ctx context.Context, user *User) (*v1.UserInfoR
 		RecommendTotal:    recommendTotalGetSub,
 		WithdrawMin:       withdrawMin,
 		WithdrawMax:       withdrawMax,
-		One:               0,
+		One:               totalAi / bPrice,
 		Two:               totalAi,
 		Pool:              tmpBuy,
 		Three:             tmpExchangeTotal,
