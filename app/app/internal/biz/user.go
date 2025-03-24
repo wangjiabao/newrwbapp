@@ -2270,7 +2270,7 @@ func (uuc *UserUseCase) EthUserRecordHandle(ctx context.Context, amount uint64, 
 				if 1 == tmpRecommendUser.Last {
 					num = 1.8
 				} else if 2 == tmpRecommendUser.Last {
-					num = 3
+					num = 2
 				} else if 3 == tmpRecommendUser.Last {
 					num = 2.3
 				} else if 4 == tmpRecommendUser.Last {
