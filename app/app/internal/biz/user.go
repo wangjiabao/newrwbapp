@@ -2058,13 +2058,13 @@ func (uuc *UserUseCase) EthUserRecordHandle(ctx context.Context, amount uint64, 
 
 		last := uint64(0)
 		newAmountUsdt := usersMap[v.UserId].AmountUsdt + float64(amount)
-		if 300 <= newAmountUsdt && newAmountUsdt < 500 {
+		if 100 <= newAmountUsdt && newAmountUsdt < 500 {
 			last = 1
 		} else if 500 <= newAmountUsdt && newAmountUsdt < 1000 {
 			last = 2
-		} else if 1000 <= newAmountUsdt && newAmountUsdt < 5000 {
+		} else if 1000 <= newAmountUsdt && newAmountUsdt < 10000 {
 			last = 3
-		} else if 5000 <= newAmountUsdt && newAmountUsdt < 30000 {
+		} else if 10000 <= newAmountUsdt && newAmountUsdt < 30000 {
 			last = 4
 		} else if 30000 <= newAmountUsdt && newAmountUsdt < 100000 {
 			last = 5
