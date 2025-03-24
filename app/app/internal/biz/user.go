@@ -1047,6 +1047,10 @@ func (uuc *UserUseCase) UserInfo(ctx context.Context, user *User) (*v1.UserInfoR
 		currentLevel = uint64(myUser.Vip)
 	}
 
+	tmpTwo := float64(0)
+	if 0 < bPrice {
+		tmpTwo = totalAi / bPrice
+	}
 	return &v1.UserInfoReply{
 		AreaMin:           tmpAreaMin,
 		AreaMax:           tmpAreaMax,
@@ -1054,8 +1058,8 @@ func (uuc *UserUseCase) UserInfo(ctx context.Context, user *User) (*v1.UserInfoR
 		RecommendTotal:    recommendTotalGetSub,
 		WithdrawMin:       withdrawMin,
 		WithdrawMax:       withdrawMax,
-		One:               totalAi / bPrice,
-		Two:               totalAi,
+		One:               totalAi,
+		Two:               tmpTwo,
 		Pool:              tmpBuy,
 		Three:             tmpExchangeTotal,
 		TodayTotal:        todayTotal,
