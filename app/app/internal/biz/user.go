@@ -1913,7 +1913,7 @@ func (uuc *UserUseCase) Buy(ctx context.Context, req *v1.BuyRequest, user *User)
 		}, nil
 	}
 
-	amountRaw := float64(0)
+	amountRaw := float64(amount)
 	amountKsdt := float64(0)
 	if 2 == req.SendBody.Type {
 		amountKsdt = float64(amount)
